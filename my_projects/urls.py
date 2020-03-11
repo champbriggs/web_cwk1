@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from cwk1.views import HandleRegisterRequest, HandleLoginRequest, HandleListRequest, HandleViewRequest, HandleAverageRequest, HandleRateRequest
+from cwk1.views import HandleRegisterRequest, HandleLoginRequest, HandleListRequest, HandleViewRequest, HandleAverageRequest, HandleRateRequest, HandleLogoutRequest
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +25,5 @@ urlpatterns = [
     path('api/view/', HandleViewRequest),
     path('api/average/', HandleAverageRequest),
     path('api/rate/', HandleRateRequest),
+    path('api/logout/', HandleLogoutRequest),
 ]

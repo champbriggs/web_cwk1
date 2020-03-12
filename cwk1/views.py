@@ -100,7 +100,7 @@ def HandleViewRequest(request):
                 star = ""
                 try
                     rating = i.total_rating / i.totalnum_rating
-                except ValueError as err:
+                except ZeroDivisionError as err:
                     return HttpResponse('Currently there is no professor rating')
                 rating = Decimal(rating).quantize(Decimal('1.'), rounding=ROUND_HALF_UP)
                 for j in range(int(rating)):
@@ -143,7 +143,7 @@ def HandleAverageRequest(request):
                     star = ""
                     try
                         rating = i['total_rating'] / i['totalnum_rating']
-                    except ValueError as err:
+                    except ZeroDivisionError as err:
                         return HttpResponse('Currently there is no professor rating')
                     rating = Decimal(rating).quantize(Decimal('1.'), rounding=ROUND_HALF_UP)
                     for i in range(int(rating)):

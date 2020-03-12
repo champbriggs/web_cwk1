@@ -98,7 +98,10 @@ def HandleViewRequest(request):
 
             for i in professor_list:
                 star = ""
-                rating = i.total_rating / i.totalnum_rating
+                try
+                    rating = i.total_rating / i.totalnum_rating
+                except ValueError as err:
+                    return HttpResponse('Currently there is no professor rating')
                 rating = Decimal(rating).quantize(Decimal('1.'), rounding=ROUND_HALF_UP)
                 for j in range(int(rating)):
                     star += "*"
@@ -138,7 +141,10 @@ def HandleAverageRequest(request):
                 p = Professor.objects.get(id = i['professor'])
                 if m.code == modcode and p.code == professorcode:
                     star = ""
-                    rating = i['total_rating'] / i['totalnum_rating']
+                    try
+                        rating = i['total_rating'] / i['totalnum_rating']
+                    except ValueError as err:
+                        return HttpResponse('Currently there is no professor rating')
                     rating = Decimal(rating).quantize(Decimal('1.'), rounding=ROUND_HALF_UP)
                     for i in range(int(rating)):
                         star += "*"

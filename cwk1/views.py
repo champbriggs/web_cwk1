@@ -98,7 +98,7 @@ def HandleViewRequest(request):
 
             for i in professor_list:
                 star = ""
-                try
+                try:
                     rating = i.total_rating / i.totalnum_rating
                 except ZeroDivisionError as err:
                     return HttpResponse('Currently there is no professor rating')
@@ -141,7 +141,7 @@ def HandleAverageRequest(request):
                 p = Professor.objects.get(id = i['professor'])
                 if m.code == modcode and p.code == professorcode:
                     star = ""
-                    try
+                    try:
                         rating = i['total_rating'] / i['totalnum_rating']
                     except ZeroDivisionError as err:
                         return HttpResponse('Currently there is no professor rating')

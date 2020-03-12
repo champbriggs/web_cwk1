@@ -11,12 +11,15 @@ import json
 # Create your views here.
 @csrf_exempt
 def HandleRegisterRequest(request):
-    if request.user.is_authenticated:
-        return HttpResponse("You are already logged in!")
-    else:
-        http_bad_response = HttpResponseBadRequest()
-        http_bad_response['Content-Type'] = 'text/plain'
+    http_bad_response = HttpResponseBadRequest()
+    http_bad_response.status_code = 503
+    http_bad_response.reason_phrase = 'Unavailable Service'
+    http_bad_response['Content-Type'] = 'text/plain'
 
+    if request.user.is_authenticated:
+        http_bad_response.content = "You are already logged in!"
+        return http_bad_response
+    else:
         if request.method != 'POST':
             http_bad_response.content = "Only POST requests are allowed for this resource"
             return http_bad_response

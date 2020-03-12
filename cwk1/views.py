@@ -30,6 +30,7 @@ def HandleRegisterRequest(request):
             email = request.POST.get('email')
             user = User.objects.create_user(username, email, password)
             user.save()
+            http_response = HttpResponse()
             http_response.status_code = 201
             http_response.reason_phrase = 'CREATED'
             return http_response('Registration successful')
@@ -51,6 +52,7 @@ def HandleLoginRequest(request):
             if user is not None:
                 login(request, user)
                 if request.user.is_authenticated:
+                    http_response = HttpResponse()
                     http_response.status_code = 200
                     http_response.reason_phrase = 'OK'
                     return http_response("Login Successful")
@@ -217,6 +219,7 @@ def HandleRateRequest(request):
                             new_modulerating.save()
 
             if instance_found == True:
+                http_response = HttpResponse()
                 http_response.status_code = 200
                 http_response.reason_phrase = 'OK'
                 return http_response('Rating submitted successfully')
@@ -230,6 +233,7 @@ def HandleRateRequest(request):
 def HandleLogoutRequest(request):
     if request.user.is_authenticated:
         logout(request)
+        http_response = HttpResponse()
         http_response.status_code = 200
         http_response.reason_phrase = 'OK'
         return http_response("Logout Successful")

@@ -86,6 +86,7 @@ def HandleViewRequest(request):
     if request.user.is_authenticated:
         http_bad_response = HttpResponseBadRequest()
         http_bad_response['Content-Type'] = 'text/plain'
+        view_found = False
 
         if request.method != 'GET':
             http_bad_response.content = "Only GET requests are allowed for this resource"
@@ -103,12 +104,16 @@ def HandleViewRequest(request):
                     star += "*"
                 data = {'professor': i.name, 'professorcode': i.code, 'rating': star}
                 data_list.append(data)
+                view_found = True
 
-            http_response = HttpResponse (json.dumps(data_list))
-            http_response['Content-Type'] = 'application/json'
-            http_response.status_code = 200
-            http_response.reason_phrase = 'OK'
-            return http_response
+            if view_found = True:
+                http_response = HttpResponse (json.dumps(data_list))
+                http_response['Content-Type'] = 'application/json'
+                http_response.status_code = 200
+                http_response.reason_phrase = 'OK'
+                return http_response
+            else:
+                return HttpResponse('Currently there is no professor rating')
     else:
         return HttpResponse("Please login before using any commands")
 

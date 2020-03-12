@@ -106,7 +106,7 @@ def HandleViewRequest(request):
                 data_list.append(data)
                 view_found = True
 
-            if view_found = True:
+            if view_found == True:
                 http_response = HttpResponse (json.dumps(data_list))
                 http_response['Content-Type'] = 'application/json'
                 http_response.status_code = 200

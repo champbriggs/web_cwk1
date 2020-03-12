@@ -8,14 +8,14 @@ import requests
 from decimal import *
 import json
 
+http_bad_response = HttpResponseBadRequest()
+http_bad_response.status_code = 503
+http_bad_response.reason_phrase = 'Unavailable Service'
+http_bad_response['Content-Type'] = 'text/plain'
+
 # Create your views here.
 @csrf_exempt
 def HandleRegisterRequest(request):
-    http_bad_response = HttpResponseBadRequest()
-    http_bad_response.status_code = 503
-    http_bad_response.reason_phrase = 'Unavailable Service'
-    http_bad_response['Content-Type'] = 'text/plain'
-
     if request.user.is_authenticated:
         http_bad_response.content = "You are already logged in!"
         return http_bad_response
@@ -36,11 +36,9 @@ def HandleRegisterRequest(request):
 
 def HandleLoginRequest(request):
     if request.user.is_authenticated:
-        return HttpResponse("You are already logged in!")
+        http_bad_response.content = "You are already logged in!"
+        return http_bad_response
     else:
-        http_bad_response = HttpResponseBadRequest()
-        http_bad_response['Content-Type'] = 'text/plain'
-
         if request.method != 'GET':
             http_bad_response.content = "Only GET requests are allowed for this resource"
             return http_bad_response
@@ -57,13 +55,11 @@ def HandleLoginRequest(request):
                     http_response.reason_phrase = 'OK'
                     return http_response("Login Successful")
             else:
-                return HttpResponse("Invalid Username and Passoword")
+                http_bad_response.content = "Invalid Username and Password"
+                return http_bad_response
 
 def HandleListRequest(request):
     if request.user.is_authenticated:
-        http_bad_response = HttpResponseBadRequest()
-        http_bad_response['Content-Type'] = 'text/plain'
-
         if request.method != 'GET':
             http_bad_response.content = "Only GET requests are allowed for this resource"
             return http_bad_response
@@ -89,12 +85,11 @@ def HandleListRequest(request):
             http_response.reason_phrase = 'OK'
             return http_response
     else:
-        return HttpResponse("Please login before using any commands")
+        http_bad_response.content = "Please login before using any commands"
+        return http_bad_response
 
 def HandleViewRequest(request):
     if request.user.is_authenticated:
-        http_bad_response = HttpResponseBadRequest()
-        http_bad_response['Content-Type'] = 'text/plain'
         view_found = False
 
         if request.method != 'GET':
@@ -125,15 +120,14 @@ def HandleViewRequest(request):
                 http_response.reason_phrase = 'OK'
                 return http_response
             else:
-                return HttpResponse('Currently there is no professor rating')
+                http_bad_response.content = "Currently there is no professor rating"
+                return http_bad_response
     else:
-        return HttpResponse("Please login before using any commands")
+        http_bad_response.content = "Please login before using any commands"
+        return http_bad_response
 
 def HandleAverageRequest(request):
     if request.user.is_authenticated:
-        http_bad_response = HttpResponseBadRequest()
-        http_bad_response['Content-Type'] = 'text/plain'
-
         if request.method != 'GET':
             http_bad_response.content = "Only GET requests are allowed for this resource"
             return http_bad_response
@@ -165,16 +159,15 @@ def HandleAverageRequest(request):
                 http_response.reason_phrase = 'OK'
                 return http_response
             else:
-                return HttpResponse('There is no such rating with professor_id: ' + professorcode + ", module_code: " + modcode)
+                http_bad_response.content = ("There is no such rating with professor_id: " + professorcode + ", module_code: " + modcode")
+                return http_bad_response
     else:
-        return HttpResponse("Please login before using any commands")
+        http_bad_response.content = "Please login before using any commands"
+        return http_bad_response
 
 @csrf_exempt
 def HandleRateRequest(request):
     if request.user.is_authenticated:
-        http_bad_response = HttpResponseBadRequest()
-        http_bad_response['Content-Type'] = 'text/plain'
-
         if request.method != 'POST':
             http_bad_response.content = "Only POST requests are allowed for this resource"
             return http_bad_response
@@ -229,9 +222,12 @@ def HandleRateRequest(request):
                 http_response.reason_phrase = 'OK'
                 return http_response('Rating submitted successfully')
             else:
-                return HttpResponse('There is no such module instance with professor_id: ' + professorcode + ", module_code: " + modcode + ", year: " + year + ", semester: " + semester)
+                http_bad_response.content = ("There is no such module instance with professor_id: " + professorcode + ", module_code: " + modcode + ", year: " + year + ", semester: " + semester")
+                return http_bad_response
     else:
-        return HttpResponse("Please login before using any commands")
+        http_bad_response.content = "Please login before using any commands"
+        return http_bad_response
+
 
 def HandleLogoutRequest(request):
     if request.user.is_authenticated:
@@ -240,4 +236,5 @@ def HandleLogoutRequest(request):
         http_response.reason_phrase = 'OK'
         return http_response("Logout Successful")
     else:
-        return HttpResponse("Please login before using any commands")
+        http_bad_response.content = "Please login before using any commands"
+        return http_bad_response

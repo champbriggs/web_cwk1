@@ -161,7 +161,8 @@ def HandleAverageRequest(request):
                 http_response.reason_phrase = 'OK'
                 return http_response
             else:
-                return http_bad_response("There is no such rating with professor_id: " + professorcode + ", module_code: " + modcode)
+                http_bad_response.content = "There is no such rating with professor_id: " + professorcode + ", module_code: " + modcode
+                return http_bad_response()
     else:
         http_bad_response.content = "Please login before using any commands"
         return http_bad_response
@@ -224,7 +225,8 @@ def HandleRateRequest(request):
                 http_response.reason_phrase = 'OK'
                 return http_response('Rating submitted successfully')
             else:
-                return http_bad_response("There is no such module instance with professor_id: " + professorcode + ", module_code: " + modcode + ", year: " + year + ", semester: " + semester)
+                http_bad_response.content = "There is no such module instance with professor_id: " + professorcode + ", module_code: " + modcode + ", year: " + year + ", semester: " + semester
+                return http_bad_response()
     else:
         http_bad_response.content = "Please login before using any commands"
         return http_bad_response

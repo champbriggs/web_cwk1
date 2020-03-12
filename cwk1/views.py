@@ -27,28 +27,35 @@ def HandleRegisterRequest(request):
             email = request.POST.get('email')
             user = User.objects.create_user(username, email, password)
             user.save()
-            return HttpResponse('Registration successful')
+            http_response.status_code = 201
+            http_response.reason_phrase = 'CREATED'
+            return http_response('Registration successful')
 
 def HandleLoginRequest(request):
-    http_bad_response = HttpResponseBadRequest()
-    http_bad_response['Content-Type'] = 'text/plain'
+    if request.user.is_authenticated:
+        return HttpResponse("You are already logged in!")
+    else:
+        http_bad_response = HttpResponseBadRequest()
+        http_bad_response['Content-Type'] = 'text/plain'
 
-    if request.method != 'GET':
-        http_bad_response.content = "Only GET requests are allowed for this resource"
-        return http_bad_response
+        if request.method != 'GET':
+            http_bad_response.content = "Only GET requests are allowed for this resource"
+            return http_bad_response
 
-    if request.method == 'GET':
-        username = request.GET.get('username')
-        password = request.GET.get('password')
-        user = authenticate(request, username=username, password=password)
+        if request.method == 'GET':
+            username = request.GET.get('username')
+            password = request.GET.get('password')
+            user = authenticate(request, username=username, password=password)
 
-        if user is not None:
-            login(request, user)
-            if request.user.is_authenticated:
-                print("True")
-                return HttpResponse("Login Successful")
-        else:
-            return HttpResponse("Invalid Username and Passoword")
+            if user is not None:
+                login(request, user)
+                if request.user.is_authenticated:
+                    print("True")
+                    http_response.status_code = 200
+                    http_response.reason_phrase = 'OK'
+                    return http_response("Login Successful")
+            else:
+                return HttpResponse("Invalid Username and Passoword")
 
 def HandleListRequest(request):
     if request.user.is_authenticated:
@@ -216,7 +223,9 @@ def HandleRateRequest(request):
                             new_modulerating.save()
 
             if instance_found == True:
-                return HttpResponse('Rating submitted successfully')
+                http_response.status_code = 200
+                http_response.reason_phrase = 'OK'
+                return http_response('Rating submitted successfully')
             else:
                 return HttpResponse('There is no such module instance with professor_id: ' + professorcode + ", module_code: " + modcode + ", year: " + year + ", semester: " + semester)
     else:
@@ -225,6 +234,8 @@ def HandleRateRequest(request):
 def HandleLogoutRequest(request):
     if request.user.is_authenticated:
         logout(request)
-        return HttpResponse("Logout Successful")
+        http_response.status_code = 200
+        http_response.reason_phrase = 'OK'
+        return http_response("Logout Successful")
     else:
         return HttpResponse("Please login before using any commands")

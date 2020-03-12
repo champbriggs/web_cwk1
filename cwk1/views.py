@@ -50,7 +50,6 @@ def HandleLoginRequest(request):
             if user is not None:
                 login(request, user)
                 if request.user.is_authenticated:
-                    print("True")
                     http_response.status_code = 200
                     http_response.reason_phrase = 'OK'
                     return http_response("Login Successful")
